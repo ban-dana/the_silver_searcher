@@ -19,6 +19,7 @@
 #include "options.h"
 #include "search.h"
 #include "util.h"
+#include "lang.h"
 
 typedef struct {
     pthread_t thread;
@@ -58,7 +59,8 @@ int main(int argc, char **argv) {
 
     gettimeofday(&(stats.time_start), NULL);
 
-    parse_options(argc, argv, &base_paths, &paths);
+    lang_parse_user_spec ();
+    parse_options (argc, argv, &base_paths, &paths);
     log_debug("PCRE Version: %s", pcre_version());
 
 #ifdef _WIN32

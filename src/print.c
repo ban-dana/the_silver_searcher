@@ -60,6 +60,9 @@ void color_normal           (FILE *out_fd) { fprintf(out_fd, "%s", color_reset  
 
 
 void print_path(const char *path, const char sep) {
+    if (opts.print_path == PATH_PRINT_NOTHING && !opts.vimgrep) {
+        return;
+    }
     path = normalize_path(path);
     const char *buf = fix_path_slashes(path);
 
@@ -180,7 +183,7 @@ void print_file_matches(const char *path, const char *buf, const size_t buf_len,
         }
 
         /* We found the end of a line. */
-        if (buf[i] == '\n' && opts.before > 0) {
+        if ((i == buf_len || buf[i] == '\n') && opts.before > 0) {
             if (context_prev_lines[last_prev_line] != NULL) {
                 free(context_prev_lines[last_prev_line]);
             }
@@ -189,7 +192,7 @@ void print_file_matches(const char *path, const char *buf, const size_t buf_len,
             last_prev_line = (last_prev_line + 1) % opts.before;
         }
 
-        if (buf[i] == '\n' || i == buf_len) {
+        if (i == buf_len || buf[i] == '\n') {
             if (lines_since_last_match == 0) {
                 if (opts.print_path == PATH_PRINT_EACH_LINE && !opts.search_stream) {
                     print_path(path, ':');
@@ -198,9 +201,14 @@ void print_file_matches(const char *path, const char *buf, const size_t buf_len,
                     /* print headers for ackmate to parse */
                     print_line_number(line, ';');
                     for (; last_printed_match < cur_match; last_printed_match++) {
-                        fprintf(out_fd, "%lu %lu",
-                                (unsigned long)(matches[last_printed_match].start - prev_line_offset),
-                                (unsigned long)(matches[last_printed_match].end - matches[last_printed_match].start));
+                        /* Don't print negative offsets. This isn't quite right, but not many people use --ackmate */
+                        long start = (long)(matches[last_printed_match].start - prev_line_offset);
+                        if (start < 0) {
+                            start = 0;
+                        }
+                        fprintf(out_fd, "%li %li",
+                                start,
+                                (long)(matches[last_printed_match].end - matches[last_printed_match].start));
                         last_printed_match == cur_match - 1 ? fputc(':', out_fd) : fputc(',', out_fd);
                     }
                     print_line(buf, i, prev_line_offset);
@@ -279,7 +287,7 @@ void print_file_matches(const char *path, const char *buf, const size_t buf_len,
                 lines_since_last_match++;
             }
             /* File doesn't end with a newline. Print one so the output is pretty. */
-            if (i == buf_len && buf[i] != '\n' && !opts.search_stream) {
+            if (i == buf_len && buf[i - 1] != '\n' && !opts.search_stream) {
                 fputc('\n', out_fd);
             }
         }
@@ -309,9 +317,11 @@ void print_line_number(size_t line, const char sep) {
 
 void print_column_number(const match_t matches[], size_t last_printed_match,
                          size_t prev_line_offset, const char sep) {
-    fprintf(out_fd, "%lu%c",
-            (unsigned long)(matches[last_printed_match].start - prev_line_offset) + 1,
-            sep);
+    size_t column = 0;
+    if (prev_line_offset <= matches[last_printed_match].start) {
+        column = (matches[last_printed_match].start - prev_line_offset) + 1;
+    }
+    fprintf(out_fd, "%lu%c", (unsigned long)column, sep);
 }
 
 void print_file_separator(void) {

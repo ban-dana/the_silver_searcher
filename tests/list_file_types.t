@@ -18,6 +18,12 @@ Language types are output:
     --batch
         .bat  .cmd
   
+    --bitbake
+        .bb  .bbappend  .bbclass  .inc
+  
+    --bro
+        .bro  .bif
+  
     --cc
         .c  .h  .xs
   
@@ -32,10 +38,13 @@ Language types are output:
 >>>>>>> windows_patch
   
     --coffee
-        .coffee
+        .coffee  .cjsx
   
     --cpp
         .cpp  .cc  .C  .cxx  .m  .hpp  .hh  .h  .H  .hxx
+  
+    --crystal
+        .cr  .ecr
   
     --csharp
         .cs
@@ -54,6 +63,9 @@ Language types are output:
 >>>>>>> windows_patch
     --elisp
         .el
+  
+    --elixir
+        .ex  .exs
   
     --erlang
         .erl  .hrl
@@ -124,6 +136,9 @@ Language types are output:
     --make
         .Makefiles  .mk  .mak
   
+    --mako
+        .mako
+  
     --markdown
         .markdown  .mdown  .mdwn  .mkdn  .mkd  .md
   
@@ -187,8 +202,14 @@ Language types are output:
     --python
         .py
   
+    --racket
+        .rkt  .ss  .scm
+  
     --rake
         .Rakefiles
+  
+    --restructuredtext
+        .rst
   
     --rs
         .rs
@@ -223,6 +244,9 @@ Language types are output:
     --smalltalk
         .st
   
+    --sml
+        .sml  .fun  .mlb  .sig
+  
     --sql
         .sql  .ctl
   
@@ -240,6 +264,9 @@ Language types are output:
   
     --tt
         .tt  .tt2  .ttml
+  
+    --toml
+        .toml
   
     --vala
         .vala  .vapi

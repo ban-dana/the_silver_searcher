@@ -4,6 +4,10 @@
 #include "lang.h"
 #include "util.h"
 
+#ifdef _WIN32
+#define strcasecmp _stricmp
+#endif
+
 #define MAX_LANGS 1000
 
 lang_spec_t langs[MAX_LANGS] = {
@@ -138,7 +142,7 @@ lang_spec_t * lang_find (char const* name)
     {
     lang_spec_t * result = langs;
     for (; result < langs + MAX_LANGS; ++result)
-        if (!_stricmp (name, result->name))
+        if (!strcasecmp (name, result->name))
             return result;
 
     return 0;
@@ -213,7 +217,7 @@ void lang_parse_user_spec ()
     strncat (dot_ag_path, getenv ("HOME"), sizeof (dot_ag_path));
 #endif
     strncat (dot_ag_path, "\\.aglang", sizeof (dot_ag_path));
-    if ( _access(dot_ag_path, 0) != -1)
+    if ( access(dot_ag_path, 0) != -1)
         lang_parse_file (dot_ag_path);
     }
 

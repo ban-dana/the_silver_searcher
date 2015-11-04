@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     root_ignores = init_ignore(NULL, "", 0);
     out_fd = stdout;
 
-    lang_parse_user_spec ();
+    lang_parse_user_spec();
     parse_options(argc, argv, &base_paths, &paths);
     log_debug("PCRE Version: %s", pcre_version());
     if (opts.stats) {
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
     log_debug("Using %i workers", workers_len);
     done_adding_files = FALSE;
     workers = (worker_t *) ag_calloc(workers_len, sizeof(worker_t));
-	if (pthread_cond_init(&files_ready, NULL)) {
+    if (pthread_cond_init(&files_ready, NULL)) {
         die("pthread_cond_init failed!");
     }
     if (pthread_mutex_init(&print_mtx, NULL)) {
@@ -167,8 +167,7 @@ int main(int argc, char **argv) {
             log_debug("searching path %s for %s", paths[i], opts.query);
             symhash = NULL;
             ignores *ig = init_ignore(root_ignores, "", 0);
-            struct stat s;
-            s.st_dev = 0;
+            struct stat s = {.st_dev = 0 };
 #ifndef _WIN32
             /* The device is ignored if opts.one_dev is false, so it's fine
              * to leave it at the default 0

@@ -6,7 +6,7 @@ branches:
 
 notifications:
   email:
-    - geoff@greer.fm
+    - bandana2004@gmail.com
 
 compiler:
   - clang

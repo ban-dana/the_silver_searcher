@@ -380,6 +380,7 @@ void parse_options(int argc, char **argv, char **base_paths[], char **paths[]) {
         { "vimgrep", no_argument, &opts.vimgrep, 1 },
         { "word-regexp", no_argument, NULL, 'w' },
         { "workers", required_argument, NULL, 0 },
+        { ".", required_argument, NULL, '.' }
     };
 
     lang_count = get_lang_count();
@@ -429,8 +430,11 @@ void parse_options(int argc, char **argv, char **base_paths[], char **paths[]) {
     }
 
     char *file_search_regex = NULL;
-    while ((ch = getopt_long(argc, argv, "A:aB:C:cDG:g:FfHhiLlm:nop:QRrSsvVtuUwz0", longopts, &opt_index)) != -1) {
+    while ((ch = getopt_long(argc, argv, ".:A:aB:C:cDG:g:FfHhiLlm:nop:QRrSsvVtuUwz0", longopts, &opt_index)) != -1) {
         switch (ch) {
+            case '.':
+                ext_index[lang_num++] = add_single_extension_language (optarg);
+                break;
             case 'A':
                 if (optarg) {
                     opts.after = strtol(optarg, &num_end, 10);
@@ -616,7 +620,11 @@ void parse_options(int argc, char **argv, char **base_paths[], char **paths[]) {
                     opts.print_path = PATH_PRINT_NOTHING;
                     opts.stats = 1;
                     break;
+                } else if (strncmp(longopts[opt_index].name, ".", 1) == 0) {
+                    ext_index[lang_num++] = add_single_extension_language (optarg);
+                    break;
                 }
+
 
                 /* Continue to usage if we don't recognize the option */
                 if (longopts[opt_index].flag != 0) {
@@ -700,7 +708,7 @@ void parse_options(int argc, char **argv, char **base_paths[], char **paths[]) {
     if (list_file_types) {
         size_t lang_index;
         printf("The following file types are supported:\n");
-        for (lang_index = 0; lang_index < lang_count; lang_index++) {
+        for (lang_index = 0; lang_index < get_lang_count(); lang_index++) {
             printf("  --%s\n    ", langs[lang_index].name);
             int j;
             for (j = 0; j < MAX_EXTENSIONS && langs[lang_index].extensions[j]; j++) {

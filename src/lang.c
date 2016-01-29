@@ -110,17 +110,17 @@ lang_spec_t *get_lang_slot() {
     return first_free;
 }
 
-char const *lang_add_ext(lang_spec_t *l, char const *ext) {
+lang_spec_t * lang_add_ext(lang_spec_t *l, char const *ext) {
     const char **pExt = l->extensions;
     size_t i = 0;
     for (; i < MAX_EXTENSIONS && *pExt; ++pExt, ++i)
         ;
 
     if (!*pExt) {
-        return (*pExt = strdup(ext));
-    } else {
-        return (*pExt);
+        *pExt = strdup(ext);
     }
+
+    return l;
 }
 
 lang_spec_t *lang_new(char const *name) {
@@ -270,4 +270,9 @@ size_t combine_file_extensions(size_t *extension_index, size_t len, char **exts)
     }
 
     return num_of_extensions;
+}
+
+size_t add_single_extension_language(char const* ext)
+{
+    return lang_add_ext(lang_new(ext), ext) - langs;
 }

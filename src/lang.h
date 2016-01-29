@@ -41,4 +41,11 @@ The combined result is returned through *exts*;
 The number of extensions that *exts* actually contain is returned.
 */
 size_t combine_file_extensions(size_t *extension_index, size_t len, char **exts);
+
+/**
+Adds new language definition consisting of a single extension.
+
+Returns new language's index or (size_t)-1  for errors
+*/
+size_t add_single_extension_language(char const* ext);
 #endif

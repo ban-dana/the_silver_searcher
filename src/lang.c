@@ -272,7 +272,10 @@ size_t combine_file_extensions(size_t *extension_index, size_t len, char **exts)
     return num_of_extensions;
 }
 
-size_t add_single_extension_language(char const* ext)
-{
-    return lang_add_ext(lang_new(ext), ext) - langs;
+size_t add_single_extension_language(char const* ext) {
+    lang_spec_t * lang = lang_new (ext);
+    if (!lang) {
+        return 0;
+    }
+    return lang_add_ext (lang, ext) - langs;
 }

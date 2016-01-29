@@ -45,7 +45,7 @@ size_t combine_file_extensions(size_t *extension_index, size_t len, char **exts)
 /**
 Adds new language definition consisting of a single extension.
 
-Returns new language's index or (size_t)-1  for errors
+Returns new language's index or 0 for error (no free lang. slots)
 */
 size_t add_single_extension_language(char const* ext);
 #endif
